@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:math';
 
@@ -24,11 +23,7 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final pathDB = join(dbPath, fileName);
 
-    return await openDatabase(
-      pathDB,
-      version: 1,
-      onCreate: _createDB,
-    );
+    return await openDatabase(pathDB, version: 1, onCreate: _createDB);
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -56,9 +51,7 @@ class DatabaseHelper {
 
   // Mengubah password menjadi hash
   String _hashPassword(String password, String salt) {
-    return sha256.convert(
-      utf8.encode('$salt:$password'),
-    ).toString();
+    return sha256.convert(utf8.encode('$salt:$password')).toString();
   }
 
   // Register pengguna baru
@@ -126,10 +119,6 @@ class DatabaseHelper {
       return null;
     }
 
-    return {
-      'id': user['id'],
-      'name': user['name'],
-      'email': user['email'],
-    };
+    return {'id': user['id'], 'name': user['name'], 'email': user['email']};
   }
 }
