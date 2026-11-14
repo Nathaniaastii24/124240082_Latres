@@ -72,26 +72,7 @@ class HabitzBackground extends StatelessWidget {
             top: 120,
             child: _blob(260, AppColors.backgroundDeep.withOpacity(0.5)),
           ),
-          // const Positioned(
-          //   left: 18,
-          //   top: 70,
-          //   child: Icon(
-          //     Icons.favorite_border_rounded,
-          //     color: AppColors.purpleSoft,
-          //     size: 44,
-          //   ),
-          // ),
-          // const Positioned(
-          //   right: 24,
-          //   bottom: 90,
-          //   child: Icon(
-          //     Icons.auto_awesome_rounded,
-          //     color: AppColors.purpleSoft,
-          //     size: 30,
-          //   ),
-          // ),
-          // Positioned(right: 30, top: 80, child: _dash(-0.6)),
-          // Positioned(left: 26, bottom: 180, child: _dash(0.5)),
+          
           child,
         ],
       ),
