@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -8,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/app_colors.dart';
 import '../auth/login_screen.dart';
+import '../../widgets/gradient_background.dart';
+import '../../widgets/glass_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,8 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _userName = 'Explorer';
   String _selectedStatus = 'All';
 
-  final TextEditingController _searchController =
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   Timer? _searchTimer;
 
@@ -37,8 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _characterError;
   String? _episodeError;
 
-  static const String _baseUrl =
-      'https://rickandmortyapi.com/api';
+  static const String _baseUrl = 'https://rickandmortyapi.com/api';
 
   @override
   void initState() {
@@ -80,21 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
       final queryParameters = <String, String>{};
 
       if (_selectedStatus != 'All') {
-        queryParameters['status'] =
-            _selectedStatus.toLowerCase();
+        queryParameters['status'] = _selectedStatus.toLowerCase();
       }
 
       if (_searchController.text.trim().isNotEmpty) {
-        queryParameters['name'] =
-            _searchController.text.trim();
+        queryParameters['name'] = _searchController.text.trim();
       }
 
       final uri = Uri.parse('$_baseUrl/character')
           .replace(queryParameters: queryParameters);
 
-      final response = await http.get(uri).timeout(
-        const Duration(seconds: 15),
-      );
+      final response = await http.get(uri).timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -143,9 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/episode'),
-      ).timeout(const Duration(seconds: 15));
+      final response = await http
+          .get(Uri.parse('$_baseUrl/episode'))
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -179,12 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onSearchChanged(String value) {
     _searchTimer?.cancel();
 
-    _searchTimer = Timer(
-      const Duration(milliseconds: 500),
-      () {
-        _loadCharacters();
-      },
-    );
+    _searchTimer = Timer(const Duration(milliseconds: 500), () {
+      _loadCharacters();
+    });
   }
 
   // ==========================================
@@ -194,8 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadFavorites() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final savedFavorites =
-        prefs.getStringList('favorite_characters') ?? [];
+    final savedFavorites = prefs.getStringList('favorite_characters') ?? [];
 
     final loaded = <Map<String, dynamic>>[];
 
@@ -203,9 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         final decoded = jsonDecode(item);
 
-        loaded.add(
-          Map<String, dynamic>.from(decoded),
-        );
+        loaded.add(Map<String, dynamic>.from(decoded));
       } catch (e) {
         // Lewati data favorit yang tidak valid.
       }
@@ -218,20 +207,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _toggleFavorite(
-    Map<String, dynamic> character,
-  ) async {
+  Future<void> _toggleFavorite(Map<String, dynamic> character) async {
     final id = character['id'];
 
-    final exists = _favorites.any(
-      (item) => item['id'] == id,
-    );
+    final exists = _favorites.any((item) => item['id'] == id);
 
     setState(() {
       if (exists) {
-        _favorites.removeWhere(
-          (item) => item['id'] == id,
-        );
+        _favorites.removeWhere((item) => item['id'] == id);
       } else {
         _favorites.add(character);
       }
@@ -260,9 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   bool _isFavorite(int id) {
-    return _favorites.any(
-      (item) => item['id'] == id,
-    );
+    return _favorites.any((item) => item['id'] == id);
   }
 
   // ==========================================
@@ -281,9 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
       (route) => false,
     );
   }
@@ -303,10 +282,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: IndexedStack(
-          index: _selectedIndex,
-          children: pages,
+      body: GradientBackground(
+        child: SafeArea(
+          child: IndexedStack(index: _selectedIndex, children: pages),
         ),
       ),
       bottomNavigationBar: NavigationBar(
@@ -366,29 +344,22 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 22, 20, 10),
-            sliver: SliverToBoxAdapter(
-              child: _buildHeader(),
-            ),
+            sliver: SliverToBoxAdapter(child: _buildHeader()),
           ),
 
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverToBoxAdapter(
-            ),
+            sliver: SliverToBoxAdapter(),
           ),
 
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 22, 20, 15),
-            sliver: SliverToBoxAdapter(
-              child: _buildSearchField(),
-            ),
+            sliver: SliverToBoxAdapter(child: _buildSearchField()),
           ),
 
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverToBoxAdapter(
-              child: _buildStatusFilter(),
-            ),
+            sliver: SliverToBoxAdapter(child: _buildStatusFilter()),
           ),
 
           SliverPadding(
@@ -421,18 +392,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.purple,
-                ),
+                child: CircularProgressIndicator(color: AppColors.purple),
               ),
             )
           else if (_characterError != null)
             SliverFillRemaining(
               hasScrollBody: false,
-              child: _buildError(
-                _characterError!,
-                _loadCharacters,
-              ),
+              child: _buildError(_characterError!, _loadCharacters),
             )
           else if (_characters.isEmpty)
             const SliverFillRemaining(
@@ -440,9 +406,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Center(
                 child: Text(
                   'Karakter tidak ditemukan.',
-                  style: TextStyle(
-                    color: AppColors.secondaryText,
-                  ),
+                  style: TextStyle(color: AppColors.secondaryText),
                 ),
               ),
             )
@@ -450,21 +414,15 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
               sliver: SliverGrid(
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 13,
                   mainAxisSpacing: 13,
                   childAspectRatio: 0.69,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return _buildCharacterCard(
-                      _characters[index],
-                    );
-                  },
-                  childCount: _characters.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return _buildCharacterCard(_characters[index]);
+                }, childCount: _characters.length),
               ),
             ),
         ],
@@ -554,12 +512,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // ==========================================
 
   Widget _buildStatusFilter() {
-    final statuses = [
-      'All',
-      'Alive',
-      'Dead',
-      'Unknown',
-    ];
+    final statuses = ['All', 'Alive', 'Dead', 'Unknown'];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -579,9 +532,7 @@ class _HomeScreenState extends State<HomeScreen> {
             final selected = _selectedStatus == status;
 
             return ChoiceChip(
-              label: Text(
-                status == 'All' ? 'Semua' : status,
-              ),
+              label: Text(status == 'All' ? 'Semua' : status),
               selected: selected,
               onSelected: (_) {
                 setState(() {
@@ -592,9 +543,7 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedColor: AppColors.purple,
               backgroundColor: Colors.white,
               labelStyle: TextStyle(
-                color: selected
-                    ? Colors.white
-                    : AppColors.secondaryText,
+                color: selected ? Colors.white : AppColors.secondaryText,
                 fontWeight: FontWeight.w700,
                 fontSize: 12,
               ),
@@ -613,31 +562,22 @@ class _HomeScreenState extends State<HomeScreen> {
   // CHARACTER CARD
   // ==========================================
 
-  Widget _buildCharacterCard(
-    Map<String, dynamic> character,
-  ) {
+  Widget _buildCharacterCard(Map<String, dynamic> character) {
     final int id = character['id'];
     final bool favorite = _isFavorite(id);
 
-    return GestureDetector(
+    return GlassCard(
+      padding: const EdgeInsets.all(8),
+      radius: 24,
+      blur: 12,
+      opacity: 0.62,
       onTap: () => _showCharacterDetail(character),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.purple.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(18),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -666,10 +606,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   Positioned(
-                    top: 9,
-                    right: 9,
+                    top: 8,
+                    right: 8,
                     child: Material(
-                      color: Colors.white,
+                      color: Colors.white.withValues(alpha: 0.88),
                       shape: const CircleBorder(),
                       child: IconButton(
                         visualDensity: VisualDensity.compact,
@@ -680,7 +620,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           favorite
                               ? Icons.favorite_rounded
                               : Icons.favorite_border_rounded,
-                          color: AppColors.purple,
+                          color: favorite ? AppColors.dead : AppColors.purple,
                           size: 21,
                         ),
                       ),
@@ -689,30 +629,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(11),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    character['name'] ?? 'Unknown',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppColors.ink,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 13,
-                    ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  character['name'] ?? 'Unknown',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
                   ),
-                  const SizedBox(height: 7),
-                  _buildStatusBadge(
-                    character['status'] ?? 'Unknown',
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 7),
+                _buildStatusBadge(character['status'] ?? 'Unknown'),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -736,10 +674,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
@@ -750,10 +685,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             width: 7,
             height: 7,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 5),
           Text(
@@ -773,9 +705,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // CHARACTER DETAIL
   // ==========================================
 
-  void _showCharacterDetail(
-    Map<String, dynamic> character,
-  ) {
+  void _showCharacterDetail(Map<String, dynamic> character) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -792,9 +722,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(28),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: SingleChildScrollView(
             child: Column(
@@ -911,8 +839,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           : GridView.builder(
               padding: const EdgeInsets.fromLTRB(20, 15, 20, 25),
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 13,
                 mainAxisSpacing: 13,
@@ -931,105 +858,113 @@ class _HomeScreenState extends State<HomeScreen> {
   // ==========================================
 
   Widget _buildEpisodeTab() {
+    // Tiga variasi cahaya kartu, bergantian per baris.
+    const glows = <List<Color>>[
+      [Color(0xFFE5D5F8), Color(0xFFF3EAFC), Color(0xFFFFFFFF)], // ungu
+      [Color(0xFFFBD3E4), Color(0xFFFCEAF2), Color(0xFFFFFFFF)], // pink
+      [Color(0xFFD5E1FB), Color(0xFFEAF0FD), Color(0xFFFFFFFF)], // biru
+    ];
+
     return _buildPage(
       title: 'Daftar Episode',
       subtitle: 'Jelajahi episode Rick & Morty.',
       child: _isLoadingEpisodes
           ? const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.purple,
-              ),
+              child: CircularProgressIndicator(color: AppColors.purple),
             )
           : _episodeError != null
-              ? _buildError(
-                  _episodeError!,
-                  () {
-                    _episodes.clear();
-                    _loadEpisodes();
-                  },
-                )
-              : _episodes.isEmpty
-                  ? _buildEmptyState(
-                      Icons.movie_outlined,
-                      'Episode belum tersedia',
-                      'Silakan coba muat ulang.',
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(
-                        20,
-                        15,
-                        20,
-                        25,
-                      ),
-                      itemCount: _episodes.length,
-                      itemBuilder: (context, index) {
-                        final episode = _episodes[index];
+          ? _buildError(_episodeError!, () {
+              _episodes.clear();
+              _loadEpisodes();
+            })
+          : _episodes.isEmpty
+          ? _buildEmptyState(
+              Icons.movie_outlined,
+              'Episode belum tersedia',
+              'Silakan coba muat ulang.',
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 15, 20, 25),
+              itemCount: _episodes.length,
+              itemBuilder: (context, index) {
+                final episode = _episodes[index];
 
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(18),
+                return GlassCard(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(14),
+                  radius: 22,
+                  blur: 10,
+                  opacity: 0.66,
+                  glow: glows[index % glows.length],
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: AppColors.buttonGradient,
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: AppColors.purpleSoft,
-                                  borderRadius:
-                                      BorderRadius.circular(15),
-                                ),
-                                child: const Icon(
-                                  Icons.play_circle_fill_rounded,
-                                  color: AppColors.purple,
-                                  size: 27,
-                                ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.purple.withValues(alpha: 0.28),
+                              blurRadius: 12,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.play_arrow_rounded,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(width: 13),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              episode['name'] ?? '-',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.ink,
                               ),
-                              const SizedBox(width: 13),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      episode['name'] ?? '-',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        color: AppColors.ink,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      episode['episode'] ?? '',
-                                      style: const TextStyle(
-                                        color: AppColors.purple,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 3),
-                                    Text(
-                                      episode['air_date'] ?? '-',
-                                      style: const TextStyle(
-                                        color: AppColors.secondaryText,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              episode['episode'] ?? '',
+                              style: const TextStyle(
+                                color: AppColors.purpleDark,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              episode['air_date'] ?? '-',
+                              style: const TextStyle(
+                                color: AppColors.secondaryText,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 
-  // ==========================================
+   // ==========================================
   // PROFILE TAB
   // ==========================================
 
@@ -1041,15 +976,42 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const SizedBox(height: 15),
-            CircleAvatar(
-              radius: 58,
-              backgroundColor: AppColors.purpleSoft,
-              backgroundImage: const NetworkImage(
-                'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+            const SizedBox(height: 8),
+
+            // Avatar Rick dengan cincin gradasi pink-ungu
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.pink, AppColors.purple],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.purple.withValues(alpha: 0.30),
+                    blurRadius: 26,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(3),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: const CircleAvatar(
+                  radius: 54,
+                  backgroundColor: AppColors.purpleSoft,
+                  backgroundImage: NetworkImage(
+                    'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 16),
             Text(
               _userName,
               style: const TextStyle(
@@ -1061,11 +1023,33 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 5),
             const Text(
               'Rick & Morty Explorer',
-              style: TextStyle(
-                color: AppColors.secondaryText,
+              style: TextStyle(color: AppColors.secondaryText),
+            ),
+            const SizedBox(height: 22),
+
+            // Kartu kaca ringkasan akun (angka asli dari daftar favorit)
+            GlassCard(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.favorite_rounded,
+                    color: AppColors.dead,
+                    size: 22,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    '${_favorites.length} karakter favorit',
+                    style: const TextStyle(
+                      color: AppColors.ink,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 14),
 
             _profileMenu(
               Icons.favorite_rounded,
@@ -1111,33 +1095,57 @@ class _HomeScreenState extends State<HomeScreen> {
     VoidCallback onTap, {
     bool isLogout = false,
   }) {
-    return Container(
+    final Color accent = isLogout ? AppColors.dead : AppColors.purple;
+
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(17),
-      ),
-      child: ListTile(
-        onTap: onTap,
-        leading: Icon(
-          icon,
-          color: isLogout ? AppColors.dead : AppColors.purple,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: isLogout ? AppColors.dead : AppColors.ink,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      radius: 22,
+      blur: 10,
+      opacity: 0.66,
+      glow: isLogout
+          ? const [Color(0xFFFBD3E4), Color(0xFFFCEAF2), Color(0xFFFFFFFF)]
+          : const [Color(0xFFE5D5F8), Color(0xFFF3EAFC), Color(0xFFFFFFFF)],
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: accent, size: 22),
           ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(fontSize: 11),
-        ),
-        trailing: const Icon(
-          Icons.chevron_right_rounded,
-          color: AppColors.secondaryText,
-        ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    color: isLogout ? AppColors.dead : AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.secondaryText,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.secondaryText,
+          ),
+        ],
       ),
     );
   }
@@ -1184,22 +1192,14 @@ class _HomeScreenState extends State<HomeScreen> {
   // EMPTY STATE
   // ==========================================
 
-  Widget _buildEmptyState(
-    IconData icon,
-    String title,
-    String subtitle,
-  ) {
+  Widget _buildEmptyState(IconData icon, String title, String subtitle) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 65,
-              color: AppColors.purpleSoft,
-            ),
+            Icon(icon, size: 65, color: AppColors.purpleSoft),
             const SizedBox(height: 15),
             Text(
               title,
@@ -1228,28 +1228,19 @@ class _HomeScreenState extends State<HomeScreen> {
   // ERROR STATE
   // ==========================================
 
-  Widget _buildError(
-    String message,
-    VoidCallback onRetry,
-  ) {
+  Widget _buildError(String message, VoidCallback onRetry) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.wifi_off_rounded,
-              color: AppColors.dead,
-              size: 55,
-            ),
+            const Icon(Icons.wifi_off_rounded, color: AppColors.dead, size: 55),
             const SizedBox(height: 15),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.secondaryText,
-              ),
+              style: const TextStyle(color: AppColors.secondaryText),
             ),
             const SizedBox(height: 15),
             ElevatedButton.icon(

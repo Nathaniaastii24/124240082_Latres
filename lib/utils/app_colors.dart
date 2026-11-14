@@ -1,55 +1,85 @@
 import 'package:flutter/material.dart';
 
-/// Palet warna diambil dari referensi UI "Habitz":
-/// latar lavender, tombol ungu, kartu pastel (mint, pink, kuning, biru).
 class AppColors {
-  // Background
-  static const Color background = Color(0xFFFFFFFF); // putih
-  static const Color backgroundDeep = Color(0xFFEDE6FD); // blob lavender muda
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color fieldFill = Color(0xFFF3F3F8);
+  AppColors._();
 
-  // Brand
-  static const Color purple = Color(0xFF6B4FD8); // tombol utama
-  static const Color purpleDark = Color(0xFF5A3FC4);
-  static const Color purpleSoft = Color(0xFFD9CCFA);
-  static const Color ink = Color(0xFF1B1B2F); // teks judul
+  // ---------- Background ----------
+  static const Color softPink = Color(0xFFF9E8EF);
+  static const Color lavender = Color(0xFFECE4F8);
+  static const Color lightPurpleBg = Color(0xFFF5ECFA);
+  static const Color babyBlue = Color(0xFFE5EAFB);
+  static const Color white = Color(0xFFFFFFFF);
 
-  // Pastel (kartu / tile)
-  static const Color mint = Color(0xFFA9EBD3);
-  static const Color pink = Color(0xFFFFB9D3);
-  static const Color pinkSoft = Color(0xFFFFD3E3);
-  static const Color yellow = Color(0xFFFFE9A8);
-  static const Color blue = Color(0xFFBDD5FB);
-  static const Color peach = Color(0xFFFFC9B5);
-  static const Color grey = Color(0xFFDADDE3);
+  /// Warna dasar scaffold (dipakai kalau tidak ada GradientBackground).
+  static const Color background = lightPurpleBg;
+  static const Color backgroundDeep = lavender;
+  static const Color surface = white;
+  static const Color fieldFill = Color(0xFFF6F1FB);
 
-  // Primary
-  static const Color primary = purple;
-  static const Color secondary = pink;
-  static const Color accent = yellow;
+  /// Gradasi utama aplikasi: kiri atas ke kanan bawah.
+  static const List<Color> backgroundGradient = [
+    softPink,
+    lightPurpleBg,
+    lavender,
+    babyBlue,
+  ];
 
-  // Text
+  // ---------- Primary ----------
+  static const Color purple = Color(0xFF9667D8);
+  static const Color purpleDark = Color(0xFF7650BC);
+  static const Color purpleSoft = Color(0xFFE5D5F8);
+  static const Color purpleLight = Color(0xFFF1E8FC);
+
+  /// Gradasi tombol ungu.
+  static const List<Color> buttonGradient = [
+    Color(0xFFB48BEA),
+    purple,
+  ];
+
+  // ---------- Accent ----------
+  static const Color pink = Color(0xFFF4BBD3);
+  static const Color pinkSoft = Color(0xFFFBE0EC);
+  static const Color mint = Color(0xFFD5F0E8);
+  static const Color softYellow = Color(0xFFFFF0D1);
+  static const Color blue = Color(0xFFE0E9FC);
+
+  // ---------- Teks ----------
+  static const Color ink = Color(0xFF30283D); // teks utama
+  static const Color secondaryText = Color(0xFF777083);
+  static const Color hintText = Color(0xFFAAA2B4);
   static const Color text = ink;
-  static const Color secondaryText = Color(0xFF4A4A60);
-  static const Color hintText = Color(0xFF9A9AAE);
 
-  // Status
-  static const Color alive = Color(0xFF3DBE94);
-  static const Color dead = Color(0xFFF2677A);
-  static const Color unknown = Color(0xFF9A9AAE);
+  // ---------- Status karakter ----------
+  static const Color alive = Color(0xFF55B99A);
+  static const Color dead = Color(0xFFEE8198);
+  static const Color unknown = Color(0xFFAAA2B4);
 
-  // Alias lama (supaya file lain tidak error)
+  // ---------- Efek kaca (glass) ----------
+  /// Putih transparan untuk kartu kaca (opacity 65-85%).
+  static Color glassFill([double opacity = 0.72]) =>
+      white.withValues(alpha: opacity);
+  static Color glassBorder([double opacity = 0.9]) =>
+      white.withValues(alpha: opacity);
+  static Color softShadow([double opacity = 0.14]) =>
+      purple.withValues(alpha: opacity);
+
+  // ---------- Alias lama (jangan dihapus) ----------
   static const Color glaucous = purple;
-  static const Color powderBlue = background;
-  static const Color vanilla = yellow;
-  static const Color mossGreen = mint;
+  static const Color powderBlue = lavender;
+  static const Color vanilla = softYellow;
+  static const Color mossGreen = alive;
   static const Color darkGreen = ink;
   static const Color steel = purple;
   static const Color steelDark = purpleDark;
-  static const Color olive = mint;
+  static const Color olive = alive;
   static const Color oliveDark = alive;
-  static const Color teal = Color(0xFF7ED3C0);
+  static const Color yellow = softYellow;
+  static const Color teal = mint;
   static const Color coral = dead;
   static const Color success = alive;
+  static const Color primary = purple;
+  static const Color secondary = pink;
+  static const Color accent = softYellow;
+  static const Color peach = pinkSoft;
+  static const Color grey = Color(0xFFE6E1EC);
 }
